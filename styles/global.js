@@ -49,8 +49,8 @@ export const globalStyle = StyleSheet.create({
     lineHeight: 19,
     color: colors.fontSecondary,
   },
-  header: {
-    fontFamily: 'Roboto-Regular',
+  headerTitle: {
+    fontFamily: 'Roboto-Bold',
     fontSize: 17,
     lineHeight: 22,
     color: colors.fontPrimary,

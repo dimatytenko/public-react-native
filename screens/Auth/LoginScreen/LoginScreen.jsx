@@ -13,7 +13,7 @@ import {
   Alert,
   Vibration,
 } from 'react-native';
-// import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 import { globalStyle } from '../../../styles/global';
 import { styles } from '../styles';
@@ -27,7 +27,7 @@ const initialState = {
 
 const LoginScreen = () => {
   const [state, setState] = useState(initialState);
-  // const navigation = useNavigation();
+  const navigation = useNavigation();
   const { height, width } = useWindowDimensions();
 
   const vertical = width < 600;
@@ -97,7 +97,7 @@ const LoginScreen = () => {
           <TouchableOpacity
             style={styles.link}
             activeOpacity={0.7}
-            // onPress={() => navigation.navigate('Register')}
+            onPress={() => navigation.navigate('Register')}
           >
             <Text style={styles.linkText}>
               Немає акаунта? <Text style={styles.textMod}>Зареєструватися</Text>

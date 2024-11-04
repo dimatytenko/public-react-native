@@ -13,12 +13,13 @@ import {
   Alert,
   Vibration,
 } from 'react-native';
-// import { useNavigation } from "@react-navigation/native";
+import { useNavigation } from '@react-navigation/native';
 
 import { globalStyle } from '../../../styles/global';
 import { styles } from '../styles';
 import CustomButton from '../../../components/CustomButton';
 import Input from '../../../components/Input';
+import Avatar from '../../../components/Avatar';
 
 const initialState = {
   nickName: '',
@@ -27,7 +28,7 @@ const initialState = {
 };
 
 const RegistrationScreen = () => {
-  // const navigation = useNavigation();
+  const navigation = useNavigation();
   const { height, width } = useWindowDimensions();
   const [state, setState] = useState(initialState);
   const [isAvatar, setIsAvatar] = useState(true);
@@ -59,18 +60,7 @@ const RegistrationScreen = () => {
             paddingBottom: vertical ? 92 : 16,
           }}
         >
-          <View style={styles.avatar}>
-            <Image
-              style={styles.img}
-              source={isAvatar ? require('../../../assets/images/avatar.png') : ''}
-            />
-            <TouchableOpacity
-              onPress={() => setIsAvatar((prevState) => !prevState)}
-              style={[styles.upload, isAvatar && styles.uploadActive]}
-            >
-              <Text style={[styles.uploadIcon, isAvatar && styles.uploadIconActive]}>+</Text>
-            </TouchableOpacity>
-          </View>
+          <Avatar />
           <View>
             <Text
               style={{
@@ -120,7 +110,7 @@ const RegistrationScreen = () => {
           <TouchableOpacity
             style={styles.link}
             activeOpacity={0.7}
-            // onPress={() => navigation.navigate('Login')}
+            onPress={() => navigation.navigate('Login')}
           >
             <Text style={styles.linkText}>
               Уже маєте акаунт? <Text style={styles.textMod}>Увійти</Text>
