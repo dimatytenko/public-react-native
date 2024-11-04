@@ -1,12 +1,43 @@
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { FontAwesome, Ionicons, AntDesign } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { doc, updateDoc } from 'firebase/firestore';
 
 import { globalStyle } from '../../styles/global';
 import ImagePost from '../../components/ImagePost';
+import { db } from '../../firebase/config';
 
-const PostsList = ({ posts }) => {
+const PostsList = ({ posts, setPosts }) => {
   const navigation = useNavigation();
+
+  const { userId } = useSelector((state) => state.auth);
+
+  const changeLike = async (postId) => {
+    const post = posts.find((post) => post.id === postId);
+    if (post && userId) {
+      const isLike = post.countLike.some((el) => el === userId);
+      let likeArray = post.countLike;
+
+      if (!isLike) {
+        likeArray = [...likeArray, userId];
+      } else {
+        likeArray = likeArray.filter((el) => el !== userId);
+      }
+
+      try {
+        const postRef = doc(db, 'posts', postId);
+        await updateDoc(postRef, { countLike: likeArray });
+
+        const updatedPosts = posts.map((p) =>
+          p.id === postId ? { ...p, countLike: likeArray } : p,
+        );
+        setPosts(updatedPosts);
+      } catch (error) {
+        console.error('error: ', error);
+      }
+    }
+  };
 
   return (
     <FlatList

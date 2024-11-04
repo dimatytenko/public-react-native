@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Text,
   View,
@@ -19,6 +20,7 @@ import { globalStyle } from '../../../styles/global';
 import { styles } from '../styles';
 import CustomButton from '../../../components/CustomButton';
 import Input from '../../../components/Input';
+import { authSignInUser } from '../../../redux/auth/authOperations';
 
 const initialState = {
   email: '',
@@ -26,6 +28,8 @@ const initialState = {
 };
 
 const LoginScreen = () => {
+  const dispatch = useDispatch();
+  const { errorLogin } = useSelector((state) => state.auth);
   const [state, setState] = useState(initialState);
   const navigation = useNavigation();
   const { height, width } = useWindowDimensions();
@@ -33,14 +37,32 @@ const LoginScreen = () => {
   const vertical = width < 600;
 
   function onSubmit() {
-    if (Object.values(state).some((value) => !value)) {
-      Alert.alert('Помилка', 'Заповніть всі поля');
+    if (!state.email || !state.password) {
       Vibration.vibrate();
+      Alert.alert('Увага', 'Заповніть всі поля');
       return;
     }
+    //  if (!validator.isEmail(state.email.trim())) {
+    //    Vibration.vibrate();
+    //    Alert.alert('Увага', 'Некоректний пароль, використовуйте приклад name@bar.com');
+    //    return;
+    //  }
+    if (state.password.trim().length < 8) {
+      Vibration.vibrate();
+      Alert.alert('Увага', 'Пароль має бути мінімум 8 сивмолів');
+      return;
+    } else {
+      authSignInUser(state)(dispatch);
 
-    console.log('state', state);
-    setState(initialState);
+      if (errorLogin) {
+        Vibration.vibrate();
+        Alert.alert('Увага', 'Такого користувача не існує');
+        return;
+      } else {
+        Keyboard.dismiss();
+        setState(initialState);
+      }
+    }
   }
 
   return (

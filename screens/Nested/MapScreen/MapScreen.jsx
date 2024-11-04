@@ -7,9 +7,7 @@ const MapScreen = () => {
   const route = useRoute();
   const { height, width } = useWindowDimensions();
 
-  // const { latitude, longitude } = route.params.location;
-  const latitude = 49.8397;
-  const longitude = 24.0297;
+  const { latitude, longitude } = route.params.location;
 
   return (
     <View style={styles.container}>

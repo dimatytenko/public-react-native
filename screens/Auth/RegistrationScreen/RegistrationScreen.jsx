@@ -1,8 +1,8 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   Text,
   View,
-  Image,
   TouchableOpacity,
   KeyboardAvoidingView,
   Keyboard,
@@ -14,12 +14,14 @@ import {
   Vibration,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+// import validator from 'validator';
 
 import { globalStyle } from '../../../styles/global';
 import { styles } from '../styles';
 import CustomButton from '../../../components/CustomButton';
 import Input from '../../../components/Input';
 import Avatar from '../../../components/Avatar';
+import { authSignUpUser } from '../../../redux/auth/authOperations';
 
 const initialState = {
   nickName: '',
@@ -29,20 +31,32 @@ const initialState = {
 
 const RegistrationScreen = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const { height, width } = useWindowDimensions();
   const [state, setState] = useState(initialState);
   const [isAvatar, setIsAvatar] = useState(true);
   const vertical = width < 600;
 
   function onSubmit() {
-    if (Object.values(state).some((value) => !value)) {
+    if (!state.email || !state.nickName || !state.password) {
       Vibration.vibrate();
       Alert.alert('Увага', 'Заповніть всі поля');
       return;
     }
-
-    console.log('state', state);
-    setState(initialState);
+    // if (!validator.isEmail(state.email.trim())) {
+    //   Vibration.vibrate();
+    //   Alert.alert('Увага', 'Некоректний пароль, використовуйте приклад name@bar.com');
+    //   return;
+    // }
+    if (state.password.trim().length < 8) {
+      Vibration.vibrate();
+      Alert.alert('Увага', 'Пароль має бути мінімум 8 сивмолів');
+      return;
+    } else {
+      authSignUpUser(state)(dispatch);
+      Keyboard.dismiss();
+      setState(initialState);
+    }
   }
 
   return (

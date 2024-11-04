@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { Text, TouchableOpacity, View, TextInput, Image, ScrollView } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as MediaLibrary from 'expo-media-library';
@@ -7,10 +8,12 @@ import { useNavigation } from '@react-navigation/native';
 import * as Location from 'expo-location';
 import { Ionicons } from '@expo/vector-icons';
 import { useIsFocused } from '@react-navigation/native';
+import { collection, addDoc } from 'firebase/firestore';
 
 import { styles } from './styles';
 import { globalStyle } from '../../../styles/global';
 import CustomButton from '../../../components/CustomButton';
+import { db } from '../../../firebase/config';
 
 const CreatePostsScreen = () => {
   const navigation = useNavigation();
@@ -25,6 +28,7 @@ const CreatePostsScreen = () => {
   const [photo, setPhoto] = useState('');
   const [comment, setComment] = useState('');
   const [place, setPlace] = useState('');
+  const { userId, nickName } = useSelector((state) => state.auth);
 
   useEffect(() => {
     (async () => {
@@ -51,7 +55,6 @@ const CreatePostsScreen = () => {
   }
 
   const takePhoto = async () => {
-    console.log('takePhoto');
     if (cameraRef.current) {
       const { uri } = await cameraRef.current.takePictureAsync();
       let location = await Location.getCurrentPositionAsync({});
@@ -77,36 +80,33 @@ const CreatePostsScreen = () => {
     setPrevPhoto(null);
   };
 
-  // const uploadPostToServer = async () => {
-  //   const currentPost = {
-  //     photo,
-  //     comment,
-  //     countComments: 0,
-  //     place,
-  //     location,
-  //     userId,
-  //     nickName,
-  //     countLike: [],
-  //     date: new Date(),
-  //     id: '',
-  //   };
-
-  //   console.log('currentPost', currentPost);
-  // };
-
-  const sendPost = () => {
-    console.log('sendPost');
+  const sendPost = async () => {
     if (!photo) {
       return;
     }
-    console.log('photo', photo);
-    console.log('comment', comment);
-    console.log('place', place);
-    console.log('location', location);
-    setPhoto('');
-    setComment('');
-    setPlace('');
-    setLocation({ latitude: 1, longitude: 1 });
+
+    const currentPost = {
+      photo,
+      comment,
+      countComments: 0,
+      place,
+      location,
+      userId,
+      nickName,
+      countLike: [],
+      date: new Date(),
+    };
+
+    try {
+      const docRef = await addDoc(collection(db, 'posts'), currentPost);
+      setPhoto('');
+      setComment('');
+      setPlace('');
+      setLocation({ latitude: 1, longitude: 1 });
+      navigation.navigate('Posts');
+    } catch (e) {
+      console.error('Error adding document: ', e);
+    }
   };
 
   function toggleCameraFacing() {
