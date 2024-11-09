@@ -11,7 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["assets/fonts/*"],
+    "assetBundlePatterns": [
+      "assets/fonts/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -19,7 +21,15 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.ACCESS_MEDIA_LOCATION"
+      ],
+      "package": "com.dimatytenko.publicreactnative"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
@@ -42,6 +52,11 @@
           "isAccessMediaLocationEnabled": true
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "2e2bca8d-6757-42a4-8a9a-24fe0b42497f"
+      }
+    }
   }
 }
